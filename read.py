@@ -1,6 +1,7 @@
 from pirc522 import RFID
 import signal
 import sys
+import RPi.GPIO as GPIO
 
 rdr = RFID()
 
@@ -15,6 +16,9 @@ signal.signal(signal.SIGINT, end_read)
 
 rdr.set_antenna_gain(7)
 
+GPIO.setup(36, GPIO.OUT)
+led=False
+
 while True:
   rdr.wait_for_tag()
   (error, tag_type) = rdr.request()
@@ -23,6 +27,8 @@ while True:
     (error, uid) = rdr.anticoll()
     if not error:
       print("  UID: " + str(uid))
+      GPIO.output(36, led)
+      led = not led
 
 # Calls GPIO cleanup
 rdr.cleanup()
