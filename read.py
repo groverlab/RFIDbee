@@ -2,14 +2,18 @@ from pirc522 import RFID
 import signal
 import sys
 import RPi.GPIO as GPIO
+import datetime
 
 rdr = RFID()
+
+logfile = open("logfile.txt", "a")
 
 def end_read(signal,frame):
     global run
     print("\nCtrl+C captured, ending read.")
     run = False
     rdr.cleanup()
+    logfile.close()
     sys.exit()
 
 signal.signal(signal.SIGINT, end_read)
@@ -27,10 +31,9 @@ while True:
     (error, uid) = rdr.anticoll()
     if not error:
       print("  UID: " + str(uid))
+      logfile.write(str(datetime.datetime.now()) + "\t" + str(uid) + "\n")
+      logfile.flush()
       GPIO.output(36, led)
       led = not led
-
-# Calls GPIO cleanup
-rdr.cleanup()
 
 
