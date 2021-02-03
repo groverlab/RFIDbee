@@ -33,5 +33,19 @@
     sudo python3 setup.py install
 
 18.  `cd` back to home and install RFIDbee using `git clone https://github.com/wgrover/RFIDbee.git`
-19.  `cd RFIDbee` and run `python3 read3.py`
+19.  `cd RFIDbee` and run `python3 read3.py`.  Confirm that RFID tags read OK and are added to `logfile.txt`.
+20.  sudo Create file `/lib/systemd/system/RFIDbee.service` containing
 
+    [Unit]
+    Description=RFIDbee
+    After=multi-user.target
+
+    [Service]
+    ExecStart=/usr/bin/python3 /home/pi/RFIDbee/read.py
+
+    [Install]
+    WantedBy=multi-user.target
+
+21.  `sudo systemctl daemon-reload`  (this must be run after any edits to `RFIDbee.service`)
+22.  `sudo systemctl enable RFIDbee.service`
+23.  `sudo reboot now`
