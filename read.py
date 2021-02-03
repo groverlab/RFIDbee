@@ -6,7 +6,7 @@ import datetime
 
 rdr = RFID()
 
-logfile = open("logfile.txt", "a")
+logfile = open("/home/pi/RFIDbee/logfile.txt", "a")
 
 def end_read(signal,frame):
     global run
