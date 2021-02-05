@@ -48,4 +48,10 @@
 
 21.  `sudo systemctl daemon-reload`  (this must be run after any edits to `RFIDbee.service`)
 22.  `sudo systemctl enable RFIDbee.service`
-23.  `sudo reboot now`
+23.  `sudo reboot now` and the reader program should start automatically after reboot.
+24.   `sudo pico /boot/config.txt` and add the following at the end of the file:
+
+  dtoverlay=gpio-shutdown,gpio_pin=26,active_low=1,gpio_pull=up
+
+System will now shutdown whenever GPIO 26 is grounded.
+25.  Shorting the RUN pins together can be used for a startup switch
