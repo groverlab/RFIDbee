@@ -7,16 +7,21 @@ import datetime
 rdr = RFID()
 
 logfile = open("/home/pi/RFIDbee/logfile.txt", "a")
+logfile.write("STARTUP AT " + str(datetime.datetime.now()) + "\n")
+logfile.flush()
 
 def end_read(signal,frame):
     global run
     print("\nCtrl+C captured, ending read.")
     run = False
     rdr.cleanup()
+    logfile.write("SHUTDOWN AT " + str(datetime.datetime.now()) + "\n")
+    logfile.flush()
     logfile.close()
     sys.exit()
 
 signal.signal(signal.SIGINT, end_read)
+signal.signal(signal.SIGTERM, end_read)
 
 rdr.set_antenna_gain(7)
 
