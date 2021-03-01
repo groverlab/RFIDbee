@@ -99,6 +99,9 @@ void setup(void) {
   nfc.SAMConfig();
   
   Serial.println("Waiting for an ISO14443A Card ...");
+
+  pinMode(3, OUTPUT);
+  digitalWrite(3, LOW);
 }
 
 
@@ -113,6 +116,8 @@ void loop(void) {
   success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
   
   if (success) {
+
+    digitalWrite(3, HIGH);
 
     DateTime now = rtc.now();
     Serial.print(now.year(), DEC);
@@ -209,5 +214,8 @@ void loop(void) {
         Serial.println("Ooops ... unable to read the requested page!?");
       }
     }
+
+    digitalWrite(3, LOW);
+
   }
 }
