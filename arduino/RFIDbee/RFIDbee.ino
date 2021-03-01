@@ -15,7 +15,7 @@ RTC_DS3231 rtc;
 
 void setup(void) {
   Serial.begin(115200);
-  while (!Serial) delay(10); // for Leonardo/Micro/Zero
+  while (!Serial) delay(10); 
 
   Serial.println("Hello!");
 
@@ -27,13 +27,12 @@ void setup(void) {
     abort();
   }
 
-
   uint32_t versiondata = nfc.getFirmwareVersion();
   if (! versiondata) {
     Serial.print("Didn't find PN53x board");
     while (1); // halt
   }
-  // Got ok data, print it out!
+
   Serial.print("Found chip PN5"); Serial.println((versiondata >> 24) & 0xFF, HEX);
   Serial.print("Firmware ver. "); Serial.print((versiondata >> 16) & 0xFF, DEC);
   Serial.print('.'); Serial.println((versiondata >> 8) & 0xFF, DEC);
@@ -55,15 +54,11 @@ void setup(void) {
   Serial.println("initialization done.");
 }
 
-
 void loop(void) {
   uint8_t success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };
   uint8_t uidLength;
 
-  // Wait for an ISO14443A type cards (Mifare, etc.).  When one is found
-  // 'uid' will be populated with the UID, and uidLength will indicate
-  // if the uid is 4 bytes (Mifare Classic) or 7 bytes (Mifare Ultralight)
   success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
 
   if (success) {
@@ -72,9 +67,9 @@ void loop(void) {
 
     DateTime now = rtc.now();
     Serial.print(now.year(), DEC);
-    Serial.print('/');
+    Serial.print('-');
     Serial.print(now.month(), DEC);
-    Serial.print('/');
+    Serial.print('-');
     Serial.print(now.day(), DEC);
     Serial.print(" ");
     Serial.print(now.hour(), DEC);
@@ -89,7 +84,6 @@ void loop(void) {
     Serial.println("I wrote to the file!");
     myFile.close();
 
-    // Display some basic information about the card
     Serial.println("Found an ISO14443A card");
     Serial.print("  UID Length: "); Serial.print(uidLength, DEC); Serial.println(" bytes");
     Serial.print("  UID Value: ");
