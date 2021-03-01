@@ -38,7 +38,9 @@ products from Adafruit!
 #include <SPI.h>
 #include <Adafruit_PN532.h>
 #include "RTClib.h"
+#include <SD.h>
 
+File myFile;
 
 // If using the breakout with SPI, define the pins for SPI communication.
 //#define PN532_SCK  (2)
@@ -102,6 +104,14 @@ void setup(void) {
 
   pinMode(3, OUTPUT);
   digitalWrite(3, LOW);
+
+
+  Serial.print("Initializing SD card...");
+  if (!SD.begin(10)) {
+    Serial.println("initialization failed!");
+    while (1);
+  }
+  Serial.println("initialization done.");
 }
 
 
@@ -134,6 +144,11 @@ void loop(void) {
     Serial.print(':');
     Serial.print(now.second(), DEC);
     Serial.println();
+
+//    myFile = SD.open("log.txt", FILE_WRITE);
+//    myFile.println("I read a chip!");
+//    Serial.println("I wrote to the file!");
+//    myFile.close();
     
     // Display some basic information about the card
     Serial.println("Found an ISO14443A card");
