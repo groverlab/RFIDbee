@@ -66,21 +66,13 @@ void loop(void) {
     digitalWrite(3, HIGH);
 
     DateTime now = rtc.now();
-    Serial.print(now.year(), DEC);
-    Serial.print('-');
-    Serial.print(now.month(), DEC);
-    Serial.print('-');
-    Serial.print(now.day(), DEC);
-    Serial.print(" ");
-    Serial.print(now.hour(), DEC);
-    Serial.print(':');
-    Serial.print(now.minute(), DEC);
-    Serial.print(':');
-    Serial.print(now.second(), DEC);
-    Serial.println();
+
+    char t[19];
+    sprintf(t, "%04d-%02d-%02d %02d:%02d:%02d", now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second());
+    Serial.println(t);
 
     myFile = SD.open("log.txt", FILE_WRITE);
-    myFile.println("I read a chip!");
+    myFile.println(t);
     Serial.println("I wrote to the file!");
     myFile.close();
 
