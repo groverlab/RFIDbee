@@ -1,10 +1,12 @@
+// RFIDbee by William H. Grover - wgrover@engr.ucr.edu
+
 #include <Wire.h>
 #include <SPI.h>
 #include <Adafruit_PN532.h>
 #include "RTClib.h"
 #include <SD.h>
 
-File myFile;
+File log_file;
 
 #define PN532_IRQ   (2)
 #define PN532_RESET (3)  // Not connected by default on the NFC Shield
@@ -15,21 +17,19 @@ RTC_DS3231 rtc;
 
 void array_to_string(byte array[], unsigned int len, char buffer[])
 {
-    for (unsigned int i = 0; i < len; i++)
-    {
-        byte nib1 = (array[i] >> 4) & 0x0F;
-        byte nib2 = (array[i] >> 0) & 0x0F;
-        buffer[i*2+0] = nib1  < 0xA ? '0' + nib1  : 'A' + nib1  - 0xA;
-        buffer[i*2+1] = nib2  < 0xA ? '0' + nib2  : 'A' + nib2  - 0xA;
-    }
-    buffer[len*2] = '\0';
+  for (unsigned int i = 0; i < len; i++)
+  {
+    byte nib1 = (array[i] >> 4) & 0x0F;
+    byte nib2 = (array[i] >> 0) & 0x0F;
+    buffer[i * 2 + 0] = nib1  < 0xA ? '0' + nib1  : 'A' + nib1  - 0xA;
+    buffer[i * 2 + 1] = nib2  < 0xA ? '0' + nib2  : 'A' + nib2  - 0xA;
+  }
+  buffer[len * 2] = '\0';
 }
 
 void setup(void) {
   Serial.begin(115200);
-  while (!Serial) delay(10); 
-
-  Serial.println("Hello!");
+  while (!Serial) delay(10);
 
   nfc.begin();
 
@@ -45,30 +45,35 @@ void setup(void) {
     while (1); // halt
   }
 
-  Serial.print("Found chip PN5"); Serial.println((versiondata >> 24) & 0xFF, HEX);
-  Serial.print("Firmware ver. "); Serial.print((versiondata >> 16) & 0xFF, DEC);
-  Serial.print('.'); Serial.println((versiondata >> 8) & 0xFF, DEC);
-
-  // configure board to read RFID tags
   nfc.SAMConfig();
-
-  Serial.println("Waiting for an ISO14443A Card ...");
 
   pinMode(3, OUTPUT);
   digitalWrite(3, LOW);
 
-
-  Serial.print("Initializing SD card...");
   if (!SD.begin(10)) {
     Serial.println("initialization failed!");
     while (1);
   }
-  Serial.println("initialization done.");
+
+  // Record startup in log file and console:
+  DateTime now = rtc.now();
+  char t[20] = "";  // 19 characters + null terminator = 20
+  sprintf(t, "%04d-%02d-%02d %02d:%02d:%02d\0", now.year(), now.month(), now.day(),
+          now.hour(), now.minute(), now.second());
+  Serial.print(t);
+  Serial.println("\tStartup");
+  log_file = SD.open("log.txt", FILE_WRITE);
+  log_file.print(t);
+  log_file.print("\t");
+  log_file.println("Startup");
+  log_file.close();
+
 }
 
 void loop(void) {
+
   uint8_t success;
-  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };
+  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // no need for null terminator here
   uint8_t uidLength;
 
   success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
@@ -78,10 +83,9 @@ void loop(void) {
     digitalWrite(3, HIGH);
 
     DateTime now = rtc.now();
-
-    char t[20] = "";  // 19 characters + null terminator = 20  
+    char t[20] = "";  // 19 characters + null terminator = 20
     sprintf(t, "%04d-%02d-%02d %02d:%02d:%02d\0", now.year(), now.month(), now.day(),
-      now.hour(), now.minute(), now.second());
+            now.hour(), now.minute(), now.second());
 
     char id[15] = ""; // max 7 nibbles = 14 characters + null terminator = 15
     array_to_string(uid, uidLength, id);
@@ -90,11 +94,11 @@ void loop(void) {
     Serial.print("\t");
     Serial.println(id);
 
-    myFile = SD.open("log.txt", FILE_WRITE);
-    myFile.print(t);
-    myFile.print("\t");
-    myFile.println(id);
-    myFile.close();
+    log_file = SD.open("log.txt", FILE_WRITE);
+    log_file.print(t);
+    log_file.print("\t");
+    log_file.println(id);
+    log_file.close();
 
     digitalWrite(3, LOW);
 
