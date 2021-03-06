@@ -19,6 +19,8 @@ Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 
 RTC_DS3231 rtc;
 
+int incomingByte = 0;
+
 void array_to_string(byte array[], unsigned int len, char buffer[])
 {
   for (unsigned int i = 0; i < len; i++)
@@ -44,9 +46,18 @@ void setup(void) {
   }
 
   if (rtc.lostPower()) {
-     Serial.println("RTC lost power, setting the time now...");
-     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-     Serial.println("RTC time set OK");
+    Serial.println("RTC lost power; waiting for time set...");
+    if (Serial.available() > 0) {
+      incomingByte = Serial.read();
+      Serial.print("I received: ");
+      Serial.println(incomingByte, DEC);
+      // This line sets the RTC with an explicit date & time, for example to set
+      // January 21, 2014 at 3am you would call:
+      // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+    }
+    Serial.println("Time successfully set; restart now.");
+    Serial.flush();
+    abort();
   }
 
   uint32_t versiondata = nfc.getFirmwareVersion();
@@ -62,7 +73,7 @@ void setup(void) {
 
   // Initialize the SD and create or open the data file for append.
   if (!sd.begin(sdChipSelect) || !file.open("LOGFILE.TXT", O_CREAT | O_WRITE | O_APPEND)) {
-    // Replace this with somthing for your app.i
+    // Replace this with somthing for your app.
     Serial.println(F("SD problem"));
     while(1);
   }
