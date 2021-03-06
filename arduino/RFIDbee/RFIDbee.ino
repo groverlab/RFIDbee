@@ -4,9 +4,13 @@
 #include <SPI.h>
 #include <Adafruit_PN532.h>
 #include "RTClib.h"
-#include <SD.h>
+//#include <SD.h>
+#include <SdFat.h>
 
-File log_file;
+const uint8_t sdChipSelect = 10;
+
+SdFat sd;
+SdFile file;
 
 #define PN532_IRQ   (2)
 #define PN532_RESET (3)  // Not connected by default on the NFC Shield
@@ -28,7 +32,7 @@ void array_to_string(byte array[], unsigned int len, char buffer[])
 }
 
 void setup(void) {
-  Serial.begin(115200);
+  Serial.begin(9600);
   while (!Serial) delay(10);
 
   nfc.begin();
@@ -37,6 +41,12 @@ void setup(void) {
     Serial.println("Couldn't find RTC");
     Serial.flush();
     abort();
+  }
+
+  if (rtc.lostPower()) {
+     Serial.println("RTC lost power, setting the time now...");
+     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+     Serial.println("RTC time set OK");
   }
 
   uint32_t versiondata = nfc.getFirmwareVersion();
@@ -50,9 +60,11 @@ void setup(void) {
   pinMode(3, OUTPUT);
   digitalWrite(3, LOW);
 
-  if (!SD.begin(10)) {
-    Serial.println("initialization failed!");
-    while (1);
+  // Initialize the SD and create or open the data file for append.
+  if (!sd.begin(sdChipSelect) || !file.open("LOGFILE.TXT", O_CREAT | O_WRITE | O_APPEND)) {
+    // Replace this with somthing for your app.i
+    Serial.println(F("SD problem"));
+    while(1);
   }
 
   // Record startup in log file and console:
@@ -62,12 +74,10 @@ void setup(void) {
           now.hour(), now.minute(), now.second());
   Serial.print(t);
   Serial.println("\tStartup");
-  log_file = SD.open("log.txt", FILE_WRITE);
-  log_file.print(t);
-  log_file.print("\t");
-  log_file.println("Startup");
-  log_file.close();
-
+  file.print(t);
+  file.print("\t");
+  file.println("Startup");
+  file.sync();
 }
 
 void loop(void) {
@@ -77,7 +87,7 @@ void loop(void) {
   uint8_t uidLength;
 
   success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
-
+  
   if (success) {
 
     digitalWrite(3, HIGH);
@@ -94,11 +104,10 @@ void loop(void) {
     Serial.print("\t");
     Serial.println(id);
 
-    log_file = SD.open("log.txt", FILE_WRITE);
-    log_file.print(t);
-    log_file.print("\t");
-    log_file.println(id);
-    log_file.close();
+    file.print(t);
+    file.print("\t");
+    file.println(id);
+    file.sync();
 
     digitalWrite(3, LOW);
 
