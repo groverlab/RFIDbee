@@ -47,17 +47,38 @@ void setup(void) {
 
   if (rtc.lostPower()) {
     Serial.println("RTC lost power; waiting for time set...");
-    if (Serial.available() > 0) {
-      incomingByte = Serial.read();
-      Serial.print("I received: ");
-      Serial.println(incomingByte, DEC);
-      // This line sets the RTC with an explicit date & time, for example to set
-      // January 21, 2014 at 3am you would call:
-      // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
-    }
-    Serial.println("Time successfully set; restart now.");
-    Serial.flush();
-    abort();
+    int year = 0;
+    int month = 0;
+    int day = 0;
+    int hour = 0;
+    int min = 0;
+    int sec = 0;
+    Serial.println("Set year in two digits, like 21 for 2021");
+    Serial.read();
+    while (!Serial.available()) { delay(10); }
+    year = Serial.parseInt();
+    Serial.println("Set month in two digits 1-12");
+    Serial.read();
+    while (!Serial.available()) { delay(10); }
+    month = Serial.parseInt();
+    Serial.println("Set day in two digits 1-31");
+    Serial.read();
+    while (!Serial.available()) { delay(10); }
+    day = Serial.parseInt();
+    Serial.println("Set hour in two digits 0-23");
+    Serial.read();
+    while (!Serial.available()) { delay(10); }
+    hour = Serial.parseInt();
+    Serial.println("Set minute in two digits 0-59");
+    Serial.read();
+    while (!Serial.available()) { delay(10); }
+    min = Serial.parseInt();
+    Serial.println("Set second in two digits 0-59");
+    Serial.read();
+    while (!Serial.available()) { delay(10); }
+    sec = Serial.parseInt();
+    rtc.adjust(DateTime(year, month, day, hour, min, sec));
+    Serial.println("Time successfully set.");
   }
 
   uint32_t versiondata = nfc.getFirmwareVersion();
