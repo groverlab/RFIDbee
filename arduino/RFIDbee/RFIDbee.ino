@@ -46,34 +46,34 @@ void setup(void) {
   }
 
   if (rtc.lostPower()) {
-    Serial.println("RTC lost power; waiting for time set...");
+    Serial.println("Real-time clock needs to be set.");
     int year = 0;
     int month = 0;
     int day = 0;
     int hour = 0;
     int min = 0;
     int sec = 0;
-    Serial.println("Set year in two digits, like 21 for 2021");
+    Serial.println("Set year in two digits, like 21 for 2021:");
     Serial.read();
     while (!Serial.available()) { delay(10); }
     year = Serial.parseInt();
-    Serial.println("Set month in two digits 1-12");
+    Serial.println("Set month in two digits 1-12:");
     Serial.read();
     while (!Serial.available()) { delay(10); }
     month = Serial.parseInt();
-    Serial.println("Set day in two digits 1-31");
+    Serial.println("Set day in two digits 1-31:");
     Serial.read();
     while (!Serial.available()) { delay(10); }
     day = Serial.parseInt();
-    Serial.println("Set hour in two digits 0-23");
+    Serial.println("Set hour in two digits 0-23:");
     Serial.read();
     while (!Serial.available()) { delay(10); }
     hour = Serial.parseInt();
-    Serial.println("Set minute in two digits 0-59");
+    Serial.println("Set minute in two digits 0-59:");
     Serial.read();
     while (!Serial.available()) { delay(10); }
     min = Serial.parseInt();
-    Serial.println("Set second in two digits 0-59");
+    Serial.println("Set second in two digits 0-59:");
     Serial.read();
     while (!Serial.available()) { delay(10); }
     sec = Serial.parseInt();
@@ -88,9 +88,6 @@ void setup(void) {
   }
 
   nfc.SAMConfig();
-
-  pinMode(3, OUTPUT);
-  digitalWrite(3, LOW);
 
   // Initialize the SD and create or open the data file for append.
   if (!sd.begin(sdChipSelect) || !file.open("LOGFILE.TXT", O_CREAT | O_WRITE | O_APPEND)) {
@@ -110,6 +107,9 @@ void setup(void) {
   file.print("\t");
   file.println("Startup");
   file.sync();
+
+  pinMode(3, OUTPUT);
+  digitalWrite(3, LOW);
 }
 
 void loop(void) {
