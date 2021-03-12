@@ -34,6 +34,10 @@ void array_to_string(byte array[], unsigned int len, char buffer[])
 }
 
 void setup(void) {
+
+  pinMode(7, OUTPUT);
+  digitalWrite(7, HIGH);
+  
   Serial.begin(9600);
   while (!Serial) delay(10);
 
@@ -108,8 +112,7 @@ void setup(void) {
   file.println("Startup");
   file.sync();
 
-  pinMode(3, OUTPUT);
-  digitalWrite(3, LOW);
+  digitalWrite(7, LOW);
 }
 
 void loop(void) {
@@ -122,7 +125,7 @@ void loop(void) {
   
   if (success) {
 
-    digitalWrite(3, HIGH);
+    digitalWrite(7, HIGH);
 
     DateTime now = rtc.now();
     char t[20] = "";  // 19 characters + null terminator = 20
@@ -141,7 +144,7 @@ void loop(void) {
     file.println(id);
     file.sync();
 
-    digitalWrite(3, LOW);
+    digitalWrite(7, LOW);
 
   }
 }

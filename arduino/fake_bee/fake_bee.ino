@@ -1,14 +1,15 @@
-// fake_bee for stress testing RFIDbee battery packs
+// fake_bee for stress testing RFIDbee readers
 // by William H. Grover  |  wgrover@engr.ucr.edu
 
 #include <Servo.h>
 
-Servo myservo;  // create servo object to control a servo
+Servo myservo;
 
 void setup() {
-  myservo.attach(9);  // attaches the servo on pin 9 to the servo object
+  myservo.attach(9);  
 }
 
+// 10% duty cycle for tag reading:
 void loop() {
   myservo.write(0);
   delay(1000);
