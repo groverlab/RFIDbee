@@ -4,8 +4,9 @@
 #include <SPI.h>
 #include <Adafruit_PN532.h>
 #include "RTClib.h"
-//#include <SD.h>
 #include <SdFat.h>
+
+#define STATUS_LED (7)   // was 3 in earlier version
 
 const uint8_t sdChipSelect = 10;
 
@@ -14,12 +15,9 @@ SdFile file;
 
 #define PN532_IRQ   (2)
 #define PN532_RESET (3)  // Not connected by default on the NFC Shield
-
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 
 RTC_DS3231 rtc;
-
-int incomingByte = 0;
 
 void array_to_string(byte array[], unsigned int len, char buffer[])
 {
@@ -35,8 +33,10 @@ void array_to_string(byte array[], unsigned int len, char buffer[])
 
 void setup(void) {
 
-  pinMode(7, OUTPUT);
-  digitalWrite(7, HIGH);
+  pinMode(STATUS_LED, OUTPUT);
+
+  // Turn on Status LED to show that startup is underway:
+  digitalWrite(STATUS_LED, HIGH);
   
   Serial.begin(9600);
   while (!Serial) delay(10);
@@ -112,7 +112,8 @@ void setup(void) {
   file.println("Startup");
   file.sync();
 
-  digitalWrite(7, LOW);
+   // If we make it this far, startup is successful; turn off Status LED:
+  digitalWrite(STATUS_LED, LOW);
 }
 
 void loop(void) {
@@ -125,7 +126,7 @@ void loop(void) {
   
   if (success) {
 
-    digitalWrite(7, HIGH);
+    digitalWrite(STATUS_LED, HIGH);
 
     DateTime now = rtc.now();
     char t[20] = "";  // 19 characters + null terminator = 20
@@ -144,7 +145,7 @@ void loop(void) {
     file.println(id);
     file.sync();
 
-    digitalWrite(7, LOW);
+    digitalWrite(STATUS_LED, LOW);
 
   }
 }
