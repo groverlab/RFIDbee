@@ -32,7 +32,7 @@ SdFile file;
 Adafruit_PN532 nfc(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS);
 Adafruit_PN532 nfc2(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS2);
 
-//RTC_DS3231 rtc;
+RTC_DS3231 rtc;
 
 void array_to_string(byte array[], unsigned int len, char buffer[])
 {
@@ -75,47 +75,47 @@ void setup(void) {
 
   nfc.begin();
 
-//  if (! rtc.begin()) {
-//    Serial.println("Couldn't find RTC");
-//    Serial.flush();
-//    abort();
-//  }
+  if (! rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    Serial.flush();
+    abort();
+  }
 
-//  if (rtc.lostPower()) {
-//    Serial.println("Real-time clock needs to be set.");
-//    int year = 0;
-//    int month = 0;
-//    int day = 0;
-//    int hour = 0;
-//    int min = 0;
-//    int sec = 0;
-//    Serial.println("Set year in two digits, like 21 for 2021:");
-//    Serial.read();
-//    while (!Serial.available()) { delay(10); }
-//    year = Serial.parseInt();
-//    Serial.println("Set month in two digits 1-12:");
-//    Serial.read();
-//    while (!Serial.available()) { delay(10); }
-//    month = Serial.parseInt();
-//    Serial.println("Set day in two digits 1-31:");
-//    Serial.read();
-//    while (!Serial.available()) { delay(10); }
-//    day = Serial.parseInt();
-//    Serial.println("Set hour in two digits 0-23:");
-//    Serial.read();
-//    while (!Serial.available()) { delay(10); }
-//    hour = Serial.parseInt();
-//    Serial.println("Set minute in two digits 0-59:");
-//    Serial.read();
-//    while (!Serial.available()) { delay(10); }
-//    min = Serial.parseInt();
-//    Serial.println("Set second in two digits 0-59:");
-//    Serial.read();
-//    while (!Serial.available()) { delay(10); }
-//    sec = Serial.parseInt();
-//    rtc.adjust(DateTime(year, month, day, hour, min, sec));
-//    Serial.println("Time successfully set.");
-//  }
+  if (rtc.lostPower()) {
+    Serial.println("Real-time clock needs to be set.");
+    int year = 0;
+    int month = 0;
+    int day = 0;
+    int hour = 0;
+    int min = 0;
+    int sec = 0;
+    Serial.println("Set year in two digits, like 21 for 2021:");
+    Serial.read();
+    while (!Serial.available()) { delay(10); }
+    year = Serial.parseInt();
+    Serial.println("Set month in two digits 1-12:");
+    Serial.read();
+    while (!Serial.available()) { delay(10); }
+    month = Serial.parseInt();
+    Serial.println("Set day in two digits 1-31:");
+    Serial.read();
+    while (!Serial.available()) { delay(10); }
+    day = Serial.parseInt();
+    Serial.println("Set hour in two digits 0-23:");
+    Serial.read();
+    while (!Serial.available()) { delay(10); }
+    hour = Serial.parseInt();
+    Serial.println("Set minute in two digits 0-59:");
+    Serial.read();
+    while (!Serial.available()) { delay(10); }
+    min = Serial.parseInt();
+    Serial.println("Set second in two digits 0-59:");
+    Serial.read();
+    while (!Serial.available()) { delay(10); }
+    sec = Serial.parseInt();
+    rtc.adjust(DateTime(year, month, day, hour, min, sec));
+    Serial.println("Time successfully set.");
+  }
 
   uint32_t versiondata = nfc.getFirmwareVersion();
   if (! versiondata) {
@@ -159,14 +159,14 @@ void setup(void) {
 
 
   // Record startup in log file and console:
-//  DateTime now = rtc.now();
-//  char t[20] = "";  // 19 characters + null terminator = 20
-//  sprintf(t, "%04d-%02d-%02d %02d:%02d:%02d\0", now.year(), now.month(), now.day(),
-//          now.hour(), now.minute(), now.second());
-//  Serial.print(t);
-//  Serial.println("\tStartup");
-//  file.print(t);
-//  file.print("\t");
+  DateTime now = rtc.now();
+  char t[20] = "";  // 19 characters + null terminator = 20
+  sprintf(t, "%04d-%02d-%02d %02d:%02d:%02d\0", now.year(), now.month(), now.day(),
+          now.hour(), now.minute(), now.second());
+  Serial.print(t);
+  Serial.println("\tStartup");
+  file.print(t);
+  file.print("\t");
   file.println("Startup");
   file.sync();
 
@@ -187,21 +187,21 @@ void loop(void) {
 
     digitalWrite(STATUS_LED, HIGH);
 
-//    DateTime now = rtc.now();
-//    char t[20] = "";  // 19 characters + null terminator = 20
-//    sprintf(t, "%04d-%02d-%02d %02d:%02d:%02d\0", now.year(), now.month(), now.day(),
-//            now.hour(), now.minute(), now.second());
+    DateTime now = rtc.now();
+    char t[20] = "";  // 19 characters + null terminator = 20
+    sprintf(t, "%04d-%02d-%02d %02d:%02d:%02d\0", now.year(), now.month(), now.day(),
+            now.hour(), now.minute(), now.second());
 
     char id[15] = ""; // max 7 nibbles = 14 characters + null terminator = 15
     array_to_string(uid, uidLength, id);
 
-//    Serial.print(t);
-//    Serial.print("\t");
+    Serial.print(t);
+    Serial.print("\t");
     Serial.print("A: ");
     Serial.println(id);
 
-//    file.print(t);
-//    file.print("\t");
+    file.print(t);
+    file.print("\t");
     file.print("A\t");
     file.println(id);
     file.sync();
@@ -217,21 +217,21 @@ void loop(void) {
 
     digitalWrite(STATUS_LED, HIGH);
 
-//    DateTime now = rtc.now();
-//    char t[20] = "";  // 19 characters + null terminator = 20
-//    sprintf(t, "%04d-%02d-%02d %02d:%02d:%02d\0", now.year(), now.month(), now.day(),
-//            now.hour(), now.minute(), now.second());
+    DateTime now = rtc.now();
+    char t[20] = "";  // 19 characters + null terminator = 20
+    sprintf(t, "%04d-%02d-%02d %02d:%02d:%02d\0", now.year(), now.month(), now.day(),
+            now.hour(), now.minute(), now.second());
 
     char id[15] = ""; // max 7 nibbles = 14 characters + null terminator = 15
     array_to_string(uid, uidLength, id);
 
-//    Serial.print(t);
-//    Serial.print("\t");
+    Serial.print(t);
+    Serial.print("\t");
     Serial.print("B:    ");
     Serial.println(id);
 
-//    file.print(t);
-//    file.print("\t");
+    file.print(t);
+    file.print("\t");
     file.print("B\t");
     file.println(id);
     file.sync();
