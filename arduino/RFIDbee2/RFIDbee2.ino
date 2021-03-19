@@ -56,23 +56,6 @@ void setup(void) {
   Serial.begin(9600);
   while (!Serial) delay(10);
 
-
-
-//  pinMode(PN532_SS, OUTPUT);
-//  digitalWrite(PN532_SS, HIGH);
-//  pinMode(PN532_SS2, OUTPUT);
-//  digitalWrite(PN532_SS2, HIGH);
-//  pinMode(sdChipSelect, OUTPUT);
-//  digitalWrite(sdChipSelect, HIGH);
-
-
-
-
-
-
-
-
-
   nfc.begin();
 
   if (! rtc.begin()) {
@@ -126,7 +109,7 @@ void setup(void) {
   nfc.setPassiveActivationRetries(0x1);
   nfc.SAMConfig();
 
-  delay(1000);
+//  delay(1000);
 
   nfc2.begin();
   uint32_t versiondata2 = nfc2.getFirmwareVersion();
@@ -138,7 +121,7 @@ void setup(void) {
   nfc2.setPassiveActivationRetries(0x1);
   nfc2.SAMConfig();
 
-  delay(1000);
+//  delay(1000);
 
 
 
@@ -151,8 +134,6 @@ void setup(void) {
     while(1);
   }
   Serial.println("CARD OK");
-
-  delay(1000);
 
 
 
