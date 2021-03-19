@@ -6,17 +6,22 @@
 #include "RTClib.h"
 #include <SdFat.h>
 
-#define STATUS_LED (13)   // was 3 in earlier version, keep it 7 for new version; 13 for onboard
+#define STATUS_LED (7)   // was 3 in earlier version, keep it 7 for new version;
 
 //const uint8_t sdChipSelect = 10;
 
 //SdFat sd;
 //SdFile file;
 
+#define PN532_SCK  (13)   // was 2
+#define PN532_MOSI (11)   // was 3
+#define PN532_MISO (12)   // was 5
+
 #define PN532_SS   (4)
 #define PN532_SS2  (6)
-Adafruit_PN532 nfc(2, 5, 3, PN532_SS);
-Adafruit_PN532 nfc2(2, 5, 3, PN532_SS2);
+
+Adafruit_PN532 nfc(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS);
+Adafruit_PN532 nfc2(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS2);
 
 //RTC_DS3231 rtc;
 
