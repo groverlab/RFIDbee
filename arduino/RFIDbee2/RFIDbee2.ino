@@ -8,13 +8,23 @@
 
 #define STATUS_LED (7)   // was 3 in earlier version, keep it 7 for new version;
 
-//const uint8_t sdChipSelect = 10;
-//SdFat sd;
-//SdFile file;
+const uint8_t sdChipSelect = 10;
+SdFat sd;
+SdFile file;
 
-#define PN532_SCK  (13)   // was 2
-#define PN532_MOSI (11)   // was 3
-#define PN532_MISO (12)   // was 5
+
+
+// ORIGINAL ADAFRUIT CODE FOR RFID READERS:
+#define PN532_SCK  (2)  
+#define PN532_MOSI (3)  
+#define PN532_MISO (5)  
+
+// STANDARD ARDUINO SPI PINS:
+//#define PN532_SCK  (13) 
+//#define PN532_MOSI (11)  
+//#define PN532_MISO (12)  
+
+
 
 #define PN532_SS   (4)
 #define PN532_SS2  (6)
@@ -135,15 +145,14 @@ void setup(void) {
 
 
 
-//  // Initialize the SD and create or open the data file for append.
-//  if (!sd.begin(sdChipSelect) || !file.open("LOGFILE.TXT", O_CREAT | O_WRITE | O_APPEND)) {
-//    // Replace this with somthing for your app.
-//    Serial.println(F("SD problem"));
-//    while(1);
-//  }
-//  Serial.println("CARD OK");
-//
-//  delay(1000);
+  // Initialize the SD and create or open the data file for append.
+  if (!sd.begin(sdChipSelect) || !file.open("LOGFILE.TXT", O_CREAT | O_WRITE | O_APPEND)) {
+    Serial.println(F("SD problem"));
+    while(1);
+  }
+  Serial.println("CARD OK");
+
+  delay(1000);
 
 
 
@@ -158,8 +167,8 @@ void setup(void) {
 //  Serial.println("\tStartup");
 //  file.print(t);
 //  file.print("\t");
-//  file.println("Startup");
-//  file.sync();
+  file.println("Startup");
+  file.sync();
 
    // If we make it this far, startup is successful; turn off Status LED:
   digitalWrite(STATUS_LED, LOW);
@@ -193,8 +202,9 @@ void loop(void) {
 
 //    file.print(t);
 //    file.print("\t");
-//    file.println(id);
-//    file.sync();
+    file.print("A\t");
+    file.println(id);
+    file.sync();
 
     digitalWrite(STATUS_LED, LOW);
 
@@ -222,8 +232,9 @@ void loop(void) {
 
 //    file.print(t);
 //    file.print("\t");
-//    file.println(id);
-//    file.sync();
+    file.print("B\t");
+    file.println(id);
+    file.sync();
 
     digitalWrite(STATUS_LED, LOW);
 
