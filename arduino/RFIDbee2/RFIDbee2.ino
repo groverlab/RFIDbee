@@ -9,7 +9,6 @@
 #define STATUS_LED (7)   // was 3 in earlier version, keep it 7 for new version;
 
 //const uint8_t sdChipSelect = 10;
-
 //SdFat sd;
 //SdFile file;
 
@@ -46,6 +45,23 @@ void setup(void) {
   
   Serial.begin(9600);
   while (!Serial) delay(10);
+
+
+
+//  pinMode(PN532_SS, OUTPUT);
+//  digitalWrite(PN532_SS, HIGH);
+//  pinMode(PN532_SS2, OUTPUT);
+//  digitalWrite(PN532_SS2, HIGH);
+//  pinMode(sdChipSelect, OUTPUT);
+//  digitalWrite(sdChipSelect, HIGH);
+
+
+
+
+
+
+
+
 
   nfc.begin();
 
@@ -114,14 +130,26 @@ void setup(void) {
 
   delay(1000);
 
+
+
+
+
+
 //  // Initialize the SD and create or open the data file for append.
 //  if (!sd.begin(sdChipSelect) || !file.open("LOGFILE.TXT", O_CREAT | O_WRITE | O_APPEND)) {
 //    // Replace this with somthing for your app.
 //    Serial.println(F("SD problem"));
 //    while(1);
 //  }
+//  Serial.println("CARD OK");
+//
+//  delay(1000);
 
-//  // Record startup in log file and console:
+
+
+
+
+  // Record startup in log file and console:
 //  DateTime now = rtc.now();
 //  char t[20] = "";  // 19 characters + null terminator = 20
 //  sprintf(t, "%04d-%02d-%02d %02d:%02d:%02d\0", now.year(), now.month(), now.day(),
