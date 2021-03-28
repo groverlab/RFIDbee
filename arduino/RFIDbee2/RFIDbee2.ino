@@ -8,7 +8,7 @@
 
 #define STATUS_LED (7)   // was 3 in earlier version, keep it 7 for new version;
 
-const uint8_t sdChipSelect = 10;
+#define sdChipSelect (10)
 SdFat sd;
 SdFile file;
 
@@ -66,38 +66,39 @@ void setup(void) {
 
   if (rtc.lostPower()) {
     Serial.println("Real-time clock needs to be set.");
-    int year = 0;
-    int month = 0;
-    int day = 0;
-    int hour = 0;
-    int min = 0;
-    int sec = 0;
-    Serial.println("Set year in two digits, like 21 for 2021:");
-    Serial.read();
-    while (!Serial.available()) { delay(10); }
-    year = Serial.parseInt();
-    Serial.println("Set month in two digits 1-12:");
-    Serial.read();
-    while (!Serial.available()) { delay(10); }
-    month = Serial.parseInt();
-    Serial.println("Set day in two digits 1-31:");
-    Serial.read();
-    while (!Serial.available()) { delay(10); }
-    day = Serial.parseInt();
-    Serial.println("Set hour in two digits 0-23:");
-    Serial.read();
-    while (!Serial.available()) { delay(10); }
-    hour = Serial.parseInt();
-    Serial.println("Set minute in two digits 0-59:");
-    Serial.read();
-    while (!Serial.available()) { delay(10); }
-    min = Serial.parseInt();
-    Serial.println("Set second in two digits 0-59:");
-    Serial.read();
-    while (!Serial.available()) { delay(10); }
-    sec = Serial.parseInt();
-    rtc.adjust(DateTime(year, month, day, hour, min, sec));
-    Serial.println("Time successfully set.");
+    while (1) ;
+//    int year = 0;
+//    int month = 0;
+//    int day = 0;
+//    int hour = 0;
+//    int min = 0;
+//    int sec = 0;
+//    Serial.println("Set year in two digits, like 21 for 2021:");
+//    Serial.read();
+//    while (!Serial.available()) { delay(10); }
+//    year = Serial.parseInt();
+//    Serial.println("Set month in two digits 1-12:");
+//    Serial.read();
+//    while (!Serial.available()) { delay(10); }
+//    month = Serial.parseInt();
+//    Serial.println("Set day in two digits 1-31:");
+//    Serial.read();
+//    while (!Serial.available()) { delay(10); }
+//    day = Serial.parseInt();
+//    Serial.println("Set hour in two digits 0-23:");
+//    Serial.read();
+//    while (!Serial.available()) { delay(10); }
+//    hour = Serial.parseInt();
+//    Serial.println("Set minute in two digits 0-59:");
+//    Serial.read();
+//    while (!Serial.available()) { delay(10); }
+//    min = Serial.parseInt();
+//    Serial.println("Set second in two digits 0-59:");
+//    Serial.read();
+//    while (!Serial.available()) { delay(10); }
+//    sec = Serial.parseInt();
+//    rtc.adjust(DateTime(year, month, day, hour, min, sec));
+//    Serial.println("Time successfully set.");
   }
 
   uint32_t versiondata = nfc.getFirmwareVersion();
@@ -109,7 +110,6 @@ void setup(void) {
   nfc.setPassiveActivationRetries(0x1);
   nfc.SAMConfig();
 
-//  delay(1000);
 
   nfc2.begin();
   uint32_t versiondata2 = nfc2.getFirmwareVersion();
@@ -121,7 +121,6 @@ void setup(void) {
   nfc2.setPassiveActivationRetries(0x1);
   nfc2.SAMConfig();
 
-//  delay(1000);
 
 
 
@@ -150,6 +149,11 @@ void setup(void) {
   file.print("\t");
   file.println("Startup");
   file.sync();
+
+
+
+
+
 
    // If we make it this far, startup is successful; turn off Status LED:
   digitalWrite(STATUS_LED, LOW);
