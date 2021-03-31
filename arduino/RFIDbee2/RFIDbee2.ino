@@ -6,7 +6,7 @@
 #include "RTClib.h"
 #include <SdFat.h>
 
-#define STATUS_LED (7)   // was 3 in earlier version, keep it 7 for new version;
+#define STATUS_LED (7)   // was 3 in first board, keep it 7 from now on;
 
 #define sdChipSelect (10)
 SdFat sd;
