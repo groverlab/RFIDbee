@@ -9,6 +9,7 @@
 #define STATUS_LED (7)   // was 3 in first board, keep it 7 from now on;
 
 #define sdChipSelect (10)
+
 SdFat sd;
 SdFile file;
 
@@ -55,8 +56,7 @@ void setup(void) {
   
   Serial.begin(9600);
   while (!Serial) delay(10);
-
-  nfc.begin();
+  Serial.println("\nStarting up");
 
   if (! rtc.begin()) {
     Serial.println("Couldn't find RTC");
@@ -100,27 +100,28 @@ void setup(void) {
 //    rtc.adjust(DateTime(year, month, day, hour, min, sec));
 //    Serial.println("Time successfully set.");
   }
-
-  uint32_t versiondata = nfc.getFirmwareVersion();
-  if (! versiondata) {
-    Serial.print("Didn't find PN53x board A");
-    while (1);
-  }
-  Serial.println("Found chip PN5 board A ");
+  
+  nfc.begin();
+//  uint32_t versiondata = nfc.getFirmwareVersion();
+//  if (! versiondata) {
+//    Serial.println("Didn't find PN532 board 1");
+//    while (1);
+//  }
   nfc.setPassiveActivationRetries(0x1);
   nfc.SAMConfig();
+  Serial.println("PN532 board 1 OK");
+
 
 
   nfc2.begin();
-  uint32_t versiondata2 = nfc2.getFirmwareVersion();
-  if (! versiondata2) {
-    Serial.println("Didn't find PN53x board B");
-    while (1);
-  }
-  Serial.println("Found chip PN5 board B ");
+//  uint32_t versiondata2 = nfc2.getFirmwareVersion();
+//  if (! versiondata2) {
+//    Serial.println("Didn't find PN532 board 2");
+//    while (1);
+//  }
   nfc2.setPassiveActivationRetries(0x1);
   nfc2.SAMConfig();
-
+  Serial.println("PN532 board 2 OK");
 
 
 
@@ -132,7 +133,7 @@ void setup(void) {
     Serial.println(F("SD problem"));
     while(1);
   }
-  Serial.println("CARD OK");
+  Serial.println("SD card OK");
 
 
 
