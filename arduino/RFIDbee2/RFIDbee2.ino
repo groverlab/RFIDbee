@@ -13,8 +13,6 @@
 SdFat sd;
 SdFile file;
 
-
-
 // ORIGINAL ADAFRUIT CODE FOR RFID READERS:
 #define PN532_SCK  (2)  
 #define PN532_MOSI (3)  
@@ -24,8 +22,6 @@ SdFile file;
 //#define PN532_SCK  (13) 
 //#define PN532_MOSI (11)  
 //#define PN532_MISO (12)  
-
-
 
 #define PN532_SS   (4)
 #define PN532_SS2  (6)
@@ -66,13 +62,34 @@ void setup(void) {
 
   if (rtc.lostPower()) {
     Serial.println("Real-time clock needs to be set.");
-    while (1) ;
-//    int year = 0;
-//    int month = 0;
-//    int day = 0;
-//    int hour = 0;
-//    int min = 0;
-//    int sec = 0;
+
+    int year = 0;
+    int month = 0;
+    int day = 0;
+    int hour = 0;
+    int min = 0;
+    int sec = 0;
+    
+    while (!Serial.available()) {
+      digitalWrite(STATUS_LED, LOW);
+      delay(200);
+      digitalWrite(STATUS_LED, HIGH);
+      delay(200);
+      }
+
+    // this is expecting a string like "21 12 31 8 0 0"
+
+    year = Serial.parseInt();
+    month = Serial.parseInt();
+    day = Serial.parseInt();
+    hour = Serial.parseInt();
+    min = Serial.parseInt();
+    sec = Serial.parseInt();
+
+    rtc.adjust(DateTime(year, month, day, hour, min, sec));
+    Serial.println("Time successfully set.");
+
+    
 //    Serial.println("Set year in two digits, like 21 for 2021:");
 //    Serial.read();
 //    while (!Serial.available()) { delay(10); }
@@ -100,33 +117,18 @@ void setup(void) {
 //    rtc.adjust(DateTime(year, month, day, hour, min, sec));
 //    Serial.println("Time successfully set.");
   }
+
+  Serial.println("RTC OK");
   
   nfc.begin();
-//  uint32_t versiondata = nfc.getFirmwareVersion();
-//  if (! versiondata) {
-//    Serial.println("Didn't find PN532 board 1");
-//    while (1);
-//  }
   nfc.setPassiveActivationRetries(0x1);
   nfc.SAMConfig();
   Serial.println("PN532 board 1 OK");
 
-
-
   nfc2.begin();
-//  uint32_t versiondata2 = nfc2.getFirmwareVersion();
-//  if (! versiondata2) {
-//    Serial.println("Didn't find PN532 board 2");
-//    while (1);
-//  }
   nfc2.setPassiveActivationRetries(0x1);
   nfc2.SAMConfig();
   Serial.println("PN532 board 2 OK");
-
-
-
-
-
 
   // Initialize the SD and create or open the data file for append.
   if (!sd.begin(sdChipSelect) || !file.open("LOGFILE.TXT", O_CREAT | O_WRITE | O_APPEND)) {
@@ -135,26 +137,16 @@ void setup(void) {
   }
   Serial.println("SD card OK");
 
-
-
-
-
   // Record startup in log file and console:
   DateTime now = rtc.now();
   char t[20] = "";  // 19 characters + null terminator = 20
   sprintf(t, "%04d-%02d-%02d %02d:%02d:%02d\0", now.year(), now.month(), now.day(),
           now.hour(), now.minute(), now.second());
   Serial.print(t);
-  Serial.println("\tStartup");
+  Serial.println("\tStartup\tStartup");
   file.print(t);
-  file.print("\t");
-  file.println("Startup");
+  file.println("\tStartup\tStartup");
   file.sync();
-
-
-
-
-
 
    // If we make it this far, startup is successful; turn off Status LED:
   digitalWrite(STATUS_LED, LOW);
@@ -182,13 +174,11 @@ void loop(void) {
     array_to_string(uid, uidLength, id);
 
     Serial.print(t);
-    Serial.print("\t");
-    Serial.print("A: ");
+    Serial.print("\t1\t");
     Serial.println(id);
 
     file.print(t);
-    file.print("\t");
-    file.print("A\t");
+    file.print("\t1\t");
     file.println(id);
     file.sync();
 
@@ -212,13 +202,11 @@ void loop(void) {
     array_to_string(uid, uidLength, id);
 
     Serial.print(t);
-    Serial.print("\t");
-    Serial.print("B:    ");
+    Serial.print("\t2\t");
     Serial.println(id);
 
     file.print(t);
-    file.print("\t");
-    file.print("B\t");
+    file.print("\t2\t");
     file.println(id);
     file.sync();
 
