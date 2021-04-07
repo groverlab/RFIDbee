@@ -6,7 +6,7 @@
 #include "RTClib.h"
 #include <SdFat.h>
 
-#define STATUS_LED (7)   // was 3 in first board, keep it 7 from now on;
+#define STATUS_LED (7)   // was 3 in first board, keep it 7 from now on
 
 #define sdChipSelect (10)
 
@@ -26,7 +26,7 @@ SdFile file;
 #define PN532_SS   (4)
 #define PN532_SS2  (6)
 
-Adafruit_PN532 nfc(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS);
+Adafruit_PN532 nfc1(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS);
 Adafruit_PN532 nfc2(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS2);
 
 RTC_DS3231 rtc;
@@ -88,41 +88,13 @@ void setup(void) {
 
     rtc.adjust(DateTime(year, month, day, hour, min, sec));
     Serial.println("Time successfully set.");
-
-    
-//    Serial.println("Set year in two digits, like 21 for 2021:");
-//    Serial.read();
-//    while (!Serial.available()) { delay(10); }
-//    year = Serial.parseInt();
-//    Serial.println("Set month in two digits 1-12:");
-//    Serial.read();
-//    while (!Serial.available()) { delay(10); }
-//    month = Serial.parseInt();
-//    Serial.println("Set day in two digits 1-31:");
-//    Serial.read();
-//    while (!Serial.available()) { delay(10); }
-//    day = Serial.parseInt();
-//    Serial.println("Set hour in two digits 0-23:");
-//    Serial.read();
-//    while (!Serial.available()) { delay(10); }
-//    hour = Serial.parseInt();
-//    Serial.println("Set minute in two digits 0-59:");
-//    Serial.read();
-//    while (!Serial.available()) { delay(10); }
-//    min = Serial.parseInt();
-//    Serial.println("Set second in two digits 0-59:");
-//    Serial.read();
-//    while (!Serial.available()) { delay(10); }
-//    sec = Serial.parseInt();
-//    rtc.adjust(DateTime(year, month, day, hour, min, sec));
-//    Serial.println("Time successfully set.");
   }
 
   Serial.println("RTC OK");
   
-  nfc.begin();
-  nfc.setPassiveActivationRetries(0x1);
-  nfc.SAMConfig();
+  nfc1.begin();
+  nfc1.setPassiveActivationRetries(0x1);
+  nfc1.SAMConfig();
   Serial.println("PN532 board 1 OK");
 
   nfc2.begin();
@@ -159,8 +131,8 @@ void loop(void) {
   uint8_t uidLength;
 
 
-  // READER A
-  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
+  // READER 1
+  success = nfc1.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
   if (success) {
 
     digitalWrite(STATUS_LED, HIGH);
@@ -186,8 +158,7 @@ void loop(void) {
 
   }
 
-
-  // READER B
+  // READER 2
   success = nfc2.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
   if (success) {
 
@@ -214,5 +185,4 @@ void loop(void) {
 
   }
 
-  
 }
