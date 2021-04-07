@@ -23,18 +23,32 @@ SdFile file;
 //#define PN532_MOSI (11)  
 //#define PN532_MISO (12)  
 
-#define PN532_SS   (4)
-#define PN532_SS2  (6)
+#define PN532_SS1 (4)
+#define PN532_SS2 (6)
 
-Adafruit_PN532 nfc1(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS);
+Adafruit_PN532 nfc1(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS1);
 Adafruit_PN532 nfc2(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS2);
 
 RTC_DS3231 rtc;
 
-void array_to_string(byte array[], unsigned int len, char buffer[])
-{
-  for (unsigned int i = 0; i < len; i++)
-  {
+// Error codes:
+// 1 blink:  reserved for OK startup
+// 2 blinks:  RTC needs to be set
+// 3 blinks:  Problem with RTC
+// 4 blinks:  Problem with SD card
+
+void blink(unsigned int count) {
+  for (unsigned int i = 0; i < count; i++) {
+    digitalWrite(STATUS_LED, HIGH);
+    delay(200);
+    digitalWrite(STATUS_LED, LOW);
+    delay(200);
+  }
+  delay(800);
+}
+
+void array_to_string(byte array[], unsigned int len, char buffer[]) {
+  for (unsigned int i = 0; i < len; i++) {
     byte nib1 = (array[i] >> 4) & 0x0F;
     byte nib2 = (array[i] >> 0) & 0x0F;
     buffer[i * 2 + 0] = nib1  < 0xA ? '0' + nib1  : 'A' + nib1  - 0xA;
@@ -57,7 +71,7 @@ void setup(void) {
   if (! rtc.begin()) {
     Serial.println("Couldn't find RTC");
     Serial.flush();
-    abort();
+    while(1) { blink(3); }
   }
 
   if (rtc.lostPower()) {
@@ -70,12 +84,7 @@ void setup(void) {
     int min = 0;
     int sec = 0;
     
-    while (!Serial.available()) {
-      digitalWrite(STATUS_LED, LOW);
-      delay(200);
-      digitalWrite(STATUS_LED, HIGH);
-      delay(200);
-      }
+    while (!Serial.available()) { blink(2); }
 
     // this is expecting a string like "21 12 31 8 0 0"
 
@@ -105,7 +114,9 @@ void setup(void) {
   // Initialize the SD and create or open the data file for append.
   if (!sd.begin(sdChipSelect) || !file.open("LOGFILE.TXT", O_CREAT | O_WRITE | O_APPEND)) {
     Serial.println(F("SD problem"));
-    while(1);
+    while(1) {
+      blink(4);
+    }
   }
   Serial.println("SD card OK");
 
