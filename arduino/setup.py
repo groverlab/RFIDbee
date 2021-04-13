@@ -1,5 +1,4 @@
-import os, sys, serial
-from datetime import datetime
+import os, sys, serial, time
 
 port = ""
 usb_count = 0
@@ -13,17 +12,21 @@ if usb_count == 0:
 if usb_count > 1:
     sys.exit("Multiple ports found")
 
+port = "/dev/" + port
+
 print(port)
 # stream = os.popen("arduino-cli compile --fqbn arduino:avr:nano RFIDbee2")
 # print(stream.read())
-# stream = os.popen("arduino-cli upload -p /dev/" + port + " --fqbn arduino:avr:nano RFIDbee2")
+# stream = os.popen("arduino-cli upload -p " + port + " --fqbn arduino:avr:nano RFIDbee2")
 # print(stream.read())
 
-ser = serial.Serial("/dev/" + port, timeout=3)
+ser = serial.Serial(port, timeout=3)
 s = ser.read(10000)
 print(s)
 
-now = datetime.now()
-print(now.strftime("%y %m %d %H %M %S"))
+timestring = time.strftime("%y %m %d %H %M %S", time.gmtime())
+print(timestring)
+ser.write(bytes(timestring, 'utf-8'))
 
 print("DONE")
+

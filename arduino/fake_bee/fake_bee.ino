@@ -6,17 +6,34 @@
 Servo myservo;
 
 void setup() {
-  myservo.attach(9);  
+  myservo.attach(9);
 }
+
+int pos = 0;
 
 // 10% duty cycle for tag reading:
 void loop() {
-  myservo.write(0);
-  delay(1000);
-  myservo.write(90);
-  delay(4000);
-  myservo.write(180);
-  delay(1000);
-  myservo.write(90);
-  delay(4000);
+  for (pos = 90; pos <= 180; pos += 1) {
+    myservo.write(pos);
+    delay(15);
+  }
+
+  for (pos = 180; pos >= 90; pos -= 1) {
+    myservo.write(pos);
+    delay(15);
+  }
+  delay(5000);
+
+  for (pos = 90; pos >= 0; pos -= 1) {
+    myservo.write(pos);
+    delay(15);
+  }
+
+  for (pos = 0; pos <= 90; pos += 1) {
+    myservo.write(pos);
+    delay(15);
+  }
+
+    delay(5000);
+
 }
