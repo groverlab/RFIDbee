@@ -1,5 +1,7 @@
 # bootstrap.py by William H. Grover
 # Automates setup of a new RFIDbee2 reader on a Mac
+# Requires arduino-cli available at
+# Requires pyserial available at 
 
 import os, sys, serial, time
 
@@ -24,11 +26,8 @@ stream = os.popen("arduino-cli upload -p " + port + " --fqbn arduino:avr:nano RF
 stream.read()
 # print("DONE UPLOADING")
 
-
 ser = serial.Serial(port, timeout=3)
 s = ser.read(10000)
-if not b"Startup\tStartup" in s:
-    sys.exit("No successful Arduino startup detected")
 
 timestring = time.strftime("%y %m %d %H %M %S", time.gmtime())
 # print(timestring)
