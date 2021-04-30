@@ -1,7 +1,7 @@
 # bootstrap.py by William H. Grover
 # Automates setup of a new RFIDbee2 reader on a Mac
-# Requires arduino-cli available at
-# Requires pyserial available at 
+# Requires pyserial from https://pythonhosted.org/pyserial
+# Requires arduino-cli from https://arduino.github.io/arduino-cli
 
 import os, sys, serial, time
 
@@ -13,15 +13,15 @@ for device in devices:
         port = device
         usb_count += 1
 if usb_count == 0:
-    sys.exit("No port found")
+    sys.exit("No connected Arduino found")
 if usb_count > 1:
-    sys.exit("Multiple ports found")
+    sys.exit("Multiple ports found; can't tell which one to use")
 
 port = "/dev/" + port
 
 # print(port)
-# stream = os.popen("arduino-cli compile --fqbn arduino:avr:nano RFIDbee2")
-# print(stream.read())
+stream = os.popen("arduino-cli compile --fqbn arduino:avr:nano RFIDbee2")
+stream.read()
 stream = os.popen("arduino-cli upload -p " + port + " --fqbn arduino:avr:nano RFIDbee2")
 stream.read()
 # print("DONE UPLOADING")
@@ -29,9 +29,16 @@ stream.read()
 ser = serial.Serial(port, timeout=3)
 s = ser.read(10000)
 
-timestring = time.strftime("%y %m %d %H %M %S", time.gmtime())
-# print(timestring)
-ser.write(bytes(timestring, 'utf-8'))
+if b"Real-time clock needs to be set" in s:  # need to set clock
+    timestring = time.strftime("%y %m %d %H %M %S", time.gmtime())
+    # print(timestring)
+    ser.write(bytes(timestring, 'utf-8'))
+
+elif b"Startup\tStartup" in s:  # successful startup
+    pass
+
+else:
+    sys.exit("No successful Arduino startup detected")
 
 print("DONE")
 
