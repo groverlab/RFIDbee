@@ -1,4 +1,4 @@
-// RFIDbee2 by William H. Grover - wgrover@engr.ucr.edu
+// RFIDbee2.ino v1 by William H. Grover | wgrover@engr.ucr.edu | groverlab.org
 
 #include <Wire.h>
 #include <SPI.h>

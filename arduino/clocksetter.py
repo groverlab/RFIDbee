@@ -1,3 +1,8 @@
+# clocksetter.py v1 by William H. Grover | wgrover@engr.ucr.edu | groverlab.org
+# Automates setup of a new RFIDbee2 reader on a Mac
+# Requires pyserial from https://pythonhosted.org/pyserial
+# This likely only works on a Mac.
+
 import os, sys, serial, time
 
 port = ""
