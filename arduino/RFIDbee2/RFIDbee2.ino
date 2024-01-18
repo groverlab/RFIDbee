@@ -125,6 +125,7 @@ void setup(void) {
   char t[20] = "";  // 19 characters + null terminator = 20
   sprintf(t, "%04d-%02d-%02d %02d:%02d:%02d\0", now.year(), now.month(), now.day(),
           now.hour(), now.minute(), now.second());
+  Serial.print("The RTC thinks the GMT time is now ");
   Serial.print(t);
   Serial.println("\tStartup\tStartup");
   file.print(t);
