@@ -1,27 +1,11 @@
-# clocksetter.py v1 by William H. Grover | wgrover@engr.ucr.edu | groverlab.org
-# Automates setup of a new RFIDbee2 reader on a Mac
-# Requires pyserial from https://pythonhosted.org/pyserial
-# This likely only works on a Mac.
+# clocksetter.py v2 by William H. Grover | wgrover@engr.ucr.edu | groverlab.org
+# Automates setup of a new RFIDbee2 reader on a MacOS or Windows computer
+# Requires pyserial from https://pythonhosted.org/pyserial;
+#   install it first using "pip install pyserial"
 
-import os, sys, serial, time
+
+import sys, serial, time, platform
 from serial.tools.list_ports import comports
-
-
-
-
-# ORIGINAL MAC STUFF:
-# port = ""
-# usb_count = 0
-# devices = os.listdir("/dev")
-# for device in devices:
-#     if "cu.usbserial" in device:
-#         port = device
-#         usb_count += 1
-# if usb_count == 0:
-#     sys.exit("No port found")
-# if usb_count > 1:
-#     sys.exit("Multiple ports found")
-# port = "/dev/" + port
 
 port = False
 for p in comports():
@@ -30,6 +14,9 @@ for p in comports():
 
 if not port:
     sys.exit("No port found with USB in the name")
+
+if platform.system() == "Darwin":  # if MacOS...
+    port = "/dev/" + port   # ...prepend /dev/
 
 print(port)
 
