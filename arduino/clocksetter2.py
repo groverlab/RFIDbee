@@ -1,0 +1,46 @@
+# clocksetter.py v1 by William H. Grover | wgrover@engr.ucr.edu | groverlab.org
+# Automates setup of a new RFIDbee2 reader on a Mac
+# Requires pyserial from https://pythonhosted.org/pyserial
+# This likely only works on a Mac.
+
+import os, sys, serial, time
+from serial.tools.list_ports import comports
+
+
+port = ""
+
+# MAC:::
+# usb_count = 0
+# devices = os.listdir("/dev")
+# for device in devices:
+#     if "cu.usbserial" in device:
+#         port = device
+#         usb_count += 1
+# if usb_count == 0:
+#     sys.exit("No port found")
+# if usb_count > 1:
+#     sys.exit("Multiple ports found")
+# port = "/dev/" + port
+
+for p in comports():
+    if "USB" in str(p):
+        print(str(p))
+exit()
+port = "COM3"
+
+print(port)
+# stream = os.popen("arduino-cli compile --fqbn arduino:avr:nano RFIDbee2")
+# print(stream.read())
+# stream = os.popen("arduino-cli upload -p " + port + " --fqbn arduino:avr:nano RFIDbee2")
+# print(stream.read())
+
+ser = serial.Serial(port, timeout=3)
+s = ser.read(10000)
+print(s)
+
+timestring = time.strftime("%y %m %d %H %M %S", time.gmtime())
+print(timestring)
+ser.write(bytes(timestring, 'utf-8'))
+
+print("DONE")
+
