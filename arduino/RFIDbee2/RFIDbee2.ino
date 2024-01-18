@@ -2,9 +2,9 @@
 
 #include <Wire.h>
 #include <SPI.h>
-#include <Adafruit_PN532.h>
-#include "RTClib.h"
-#include <SdFat.h>
+#include <Adafruit_PN532.h>  # from "Adafruit PN532" by Adafruit
+#include "RTClib.h"  # from "RTClib" by Adafruit
+#include <SdFat.h>  # from "SdFat" by Bill Greiman
 
 #define STATUS_LED (7)   // was 3 in first board, keep it 7 from now on
 
