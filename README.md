@@ -21,7 +21,7 @@ If you are asked about installing library dependencies, select *INSTALL ALL*.
 
 ## Installing RFIDbee2 helper software on a Windows or MacOS computer
 
-1. Install Python - make sure “add python.exe to PATH” is checked
+1. Download and install Python for your operating system from [https://www.python.org/downloads](https://www.python.org/downloads).  If you see an option similar to *"add python to PATH"* while installing, make sure that the is *checked*.
 2. Clone the GitHub repo
 4. In the terminal, type `pip install pyserial`
 
