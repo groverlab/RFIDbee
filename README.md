@@ -7,7 +7,7 @@ Code for "RFIDbee2" bee trackers by the Grover and Woodard Labs at the Universit
 1. Download and install the Arduino IDE for your operating system from [https://www.arduino.cc/en/software](https://www.arduino.cc/en/software)
 
 1. Open the Arduino IDE.  Select *Tools > Manage Libraries*.  The "Library Manager" sidebar should appear.  In the "Filter your search" box, enter the name of each of these three libraries and search for and install them:
-   * `Adafruit PN532`  (by Adafruit)
+   * `Adafruit PN532` (by Adafruit)
    * `RTClib` (by Adafruit)
    * `SdFat` (by Bill Greiman)
 If you are asked about installing library dependencies, select *INSTALL ALL*.
