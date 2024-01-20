@@ -3,9 +3,13 @@
 # Requires pyserial from https://pythonhosted.org/pyserial;
 #   install it first using "pip install pyserial"
 
+import sys, time, platform
 
-import sys, serial, time, platform
-from serial.tools.list_ports import comports
+try:
+    import serial
+    from serial.tools.list_ports import comports
+except ImportError as err:
+    sys.exit("❌ Can't find pyserial module - install it by running 'pip install pyserial'")
 
 ports = 0
 port = ""
