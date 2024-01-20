@@ -15,24 +15,24 @@ for p in comports():
         ports += 1
 
 if ports == 0:
-    sys.exit("No port found - is the RFIDbee2 plugged in?")
+    sys.exit("❌ No port found - is the RFIDbee2 plugged in?")
 
 if ports >= 2:
-    sys.exit("Too many ports found - unplug everything but the RFIDbee2 and try again")
+    sys.exit("❌ Too many ports found - unplug everything but the RFIDbee2 and try again")
 
 if platform.system() == "Darwin":  # if MacOS...
     port = "/dev/" + port   # ...prepend /dev/
 
-print("Found an RFIDbee2 at " + port)
+print("✅ Found an RFIDbee2 at " + port)
 
 ser = serial.Serial(port, timeout=3)
 s = ser.read(10000)
 print(s.decode("utf-8"))
 
-print("Setting the clock using this time:   ", end="")
+print("✅ Setting the clock using this time:   ", end="")
 timestring = time.strftime("%y %m %d %H %M %S", time.gmtime())
 print(timestring)
 ser.write(bytes(timestring, 'utf-8'))
 
-print("DONE")
+print("✅ DONE")
 
