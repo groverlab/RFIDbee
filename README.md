@@ -1,5 +1,7 @@
 # RFIDbee
 
+![alt text](rfidbee.png)
+
 Code for "RFIDbee2" bee trackers by the Grover and Woodard Labs at the University of California, Riverside.
 
 ## Installing (or updating) software on RFIDbee2 trackers
